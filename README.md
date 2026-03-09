@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Website Audit Tool
 
-## Getting Started
+A lightweight AI-powered website audit tool built for the Eight25 AI-Native Software Engineer assessment.
 
-First, run the development server:
+The tool accepts a single URL, extracts factual webpage metrics, and uses an LLM to generate structured insights and prioritized recommendations. Factual metrics are intentionally kept separate from AI-generated analysis.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Factual Metrics
+- Total word count
+- Heading counts (H1, H2, H3)
+- CTA count
+- Internal vs external link count
+- Image count
+- Percentage of images missing alt text
+- Meta title
+- Meta description
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### AI Insights
+- SEO structure
+- Messaging clarity
+- CTA usage
+- Content depth
+- UX / structural concerns
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Recommendations
+- 3–5 prioritized recommendations
+- Each recommendation is grounded in extracted metrics and page content
 
-## Learn More
+### Prompt Logs
+- System prompt
+- User prompt
+- Structured input sent to the model
+- Raw model output before formatting
 
-To learn more about Next.js, take a look at the following resources:
+## Architecture Overview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The app is split into two clear layers:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Deterministic extraction layer**
+   - Fetches a single webpage
+   - Parses HTML
+   - Extracts factual metrics
 
-## Deploy on Vercel
+2. **AI analysis layer**
+   - Receives structured inputs from the extraction layer
+   - Generates grounded insights and recommendations
+   - Returns structured JSON output
+   - Exposes prompt logs for transparency
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js** for frontend and API routes
+- **TypeScript** for type safety
+- **Cheerio** for HTML parsing
+- **Google Gemini API** for AI analysis
+- **Vercel** for deployment
+
+## Project Structure
+
+```text
+app/
+  api/
+    audit/
+      route.ts
+  page.tsx
+
+lib/
+  fetchHtml.ts
+  extractMetrics.ts
+  buildPrompt.ts
+  aiAnalysis.ts
+
+types/
+  audit.ts
