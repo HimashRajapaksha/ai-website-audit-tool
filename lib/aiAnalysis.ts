@@ -2,14 +2,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AuditMetrics, AuditResponse } from "@/types/audit";
 import { buildAuditPrompts } from "./buildPrompt";
 
-const apiKey = process.env.GEMINI_API_KEY;
-
-if (!apiKey) {
-  throw new Error("Missing GEMINI_API_KEY in .env.local");
-}
-
-const genAI = new GoogleGenerativeAI(apiKey);
-
 function extractJson(raw: string) {
   const cleaned = raw
     .replace(/```json/g, "")
@@ -30,6 +22,13 @@ function extractJson(raw: string) {
 export async function runAiAnalysis(
   metrics: AuditMetrics
 ): Promise<AuditResponse> {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("Missing GEMINI_API_KEY");
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
   const { systemPrompt, userPrompt, structuredInput } = buildAuditPrompts(metrics);
 
   const model = genAI.getGenerativeModel({
